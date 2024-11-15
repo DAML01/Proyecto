@@ -3,76 +3,139 @@
 #include <fstream>
 using namespace std;
 
-bool InicioSesion ()
+// Función para manejar el registro de usuarios
+void RegistrarUsuario()
 {
     string usuario, contrasena;
-    string user, contra;//para comparar las primeras variables
 
-    cout<<"ingrese su usuario ";
-    cin>>usuario;
-    cout<<"ingrese su contraseña";
-    cin>>contrasena;
+    cout << "Ingrese usuario: ";
+    cin >> usuario;
+    cout << "Ingrese contraseña: ";
+    cin >> contrasena;
 
-    ifstream read(usuario + ".txt");
-    getline(read, user);//lee usuario
-    getline(read, contra);
-
-    if(user==usuario && contra==contrasena)//this makes the read to see if the user and password matches
-    //then gives access
+    ofstream archivo(usuario + ".txt");
+    if (archivo.is_open())
     {
-        return true
-    }
-    else 
-    {
-        return false
-    }
-    
-}
-
-int main(){
-    int opcion;
-    cout<< endl;
-    cout<< "Menu" <<endl;
-    cout<<"---------------" <<enld;
-    cout<<"1.registrarse " <<endl;
-    cout<<"2.acceder" <<endl;
-    cout<< endld;
-    cout<<"opción";
-    cin>>opcion;
-
-    if (opcion==1)
-    {
-        string usuario, contrasena;
-
-        cout<<"rellene las opciones " <<endl;
-        cout<< endl;
-        cout<<"ingrese usuario" <<endl;
-        cin>>usuario
-        cout<<"ingrese contraseña" <<endl;
-        cin>> contrasena;
-
-        ofstream archivo;//crear archivo con información
-        archivo.open(usuario +".txt");
-        archivo <<usuario <<enld <<contrasena;
+        archivo << usuario << endl
+                << contrasena;
         archivo.close();
-
-        cout<< "Bienvenido" <<usuario << "!!" <<endl;
-    }
-    else if(opcion==2)
-    {
-        bool estado = InicioSesion();
-        
-        if(!estado)
-        system("clear");
-    cout<< endl;
-    cout<<"no se pudo acceder a su cuenta"<<endl;
-    main ();
-    return 0;
+        cout << "¡Usuario registrado con éxito!\n";
     }
     else
     {
-        cout<< "Bienvenido!" <<endl;
-
+        cout << "Error al crear el archivo.\n";
     }
+}
+
+// Función para manejar el inicio de sesión
+bool IniciarSesion()
+{
+    string usuario, contrasena;
+    string user, contra;
+
+    cout << "Ingrese su usuario: ";
+    cin >> usuario;
+    cout << "Ingrese su contraseña: ";
+    cin >> contrasena;
+
+    ifstream archivo(usuario + ".txt");
+    if (!archivo.is_open())
+    {
+        cout << "Usuario no encontrado.\n";
+        return false;
+    }
+
+    getline(archivo, user);
+    getline(archivo, contra);
+    archivo.close();
+
+    if (user == usuario && contra == contrasena)
+    {
+        cout << "¡Inicio de sesión exitoso! Bienvenido, " << usuario << "!\n";
+        return true;
+    }
+    else
+    {
+        cout << "Usuario o contraseña incorrectos.\n";
+        return false;
+    }
+}
+// Funcion retiro de dinero
+float retirarDinero(float saldo, int montoRetiro)
+{
+    if (montoRetiro > saldo)
+    {
+        cout << "No tienes suficiente saldo para este retiro." << endl;
+        return saldo;
+    }
+    if (montoRetiro % 5 != 0)
+    {
+        cout << "Solo puedes retirar montos que terminen en 5 o 0." << endl;
+        return saldo;
+    }
+    if (montoRetiro > 500)
+    {
+        cout << "Para cantidades mayores a $500, por favor acerquese a sucursal mas cercana." << endl;
+        return saldo;
+    }
+    return saldo - montoRetiro;
+}
+
+// Función principal del menú
+void MostrarMenu()
+{
+    int opcion, opcion1, montoretiro;
+    float saldo = 1000.75;
+    do
+    {
+        cout << "\nMenu\n";
+        cout << "---------------\n";
+        cout << "1. Registrarse\n";
+        cout << "2. Iniciar Sesión\n";
+        cout << "3. Salir\n";
+        cout << "Opción: ";
+        cin >> opcion;
+
+        switch (opcion)
+        {
+        case 1:
+            RegistrarUsuario();
+            break;
+        case 2:
+            if (IniciarSesion())
+            {
+                cout << "Menu" << endl;
+                cout << "1. Retiro" << endl;
+                cin >> opcion1;
+                switch (opcion1)
+                {
+                case 1:
+                    cout << "Saldo actual: $" << saldo << endl;
+                    cout << "Ingresa el monto a retirar: $";
+                    cin >> montoretiro;
+
+                    saldo = retirarDinero(saldo, montoretiro); // Actualiza el saldo después del registro del retiro.
+
+                    cout << "Saldo restante: $" << saldo << endl;
+                    break;
+
+                default:
+                    break;
+                }
+            }
+            break;
+        case 3:
+            cout << "¡Adiós!\n";
+            break;
+        default:
+            cout << "Opción no válida. Intente de nuevo.\n";
+            break;
+        }
+    } while (opcion != 3);
+}
+
+int main()
+{
+    MostrarMenu();
     return 0;
 }
