@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <stdexcept>
 using namespace std;
 
 // Función para manejar el registro de usuarios
@@ -18,76 +17,13 @@ void RegistrarUsuario()
     if (archivo.is_open())
     {
         archivo << usuario << endl
-                << contrasena << endl
-                << "1000.75"; // Saldo inicial
+                << contrasena;
         archivo.close();
         cout << "¡Usuario registrado con éxito!\n";
     }
     else
     {
         cout << "Error al crear el archivo.\n";
-    }
-}
-
-// Función para cargar el saldo de un usuario
-float CargarSaldo(const string &usuario)
-{
-    ifstream archivo(usuario + ".txt");
-    string linea, saldoStr;
-    float saldo = 0.0;
-
-    if (archivo.is_open())
-    {
-        getline(archivo, linea);        // Usuario
-        getline(archivo, linea);        // Contraseña
-        if (getline(archivo, saldoStr)) // Intenta leer el saldo
-        {
-            try
-            {
-                saldo = stof(saldoStr); // Convertir a float
-            }
-            catch (const invalid_argument &e)
-            {
-                cerr << "Error: El saldo en el archivo no es válido.\n";
-                saldo = 0.0; // Saldo predeterminado
-            }
-            catch (const out_of_range &e)
-            {
-                cerr << "Error: El saldo en el archivo está fuera de rango.\n";
-                saldo = 0.0; // Saldo predeterminado
-            }
-        }
-        else
-        {
-            cerr << "Error: No se pudo leer el saldo.\n";
-        }
-        archivo.close();
-    }
-    else
-    {
-        cout << "Error al cargar el archivo del usuario.\n";
-    }
-
-    return saldo;
-}
-
-// Función para guardar el saldo de un usuario
-void GuardarSaldo(const string &usuario, float saldo)
-{
-    fstream archivo(usuario + ".txt", ios::in | ios::out);
-    string linea;
-
-    if (archivo.is_open())
-    {
-        getline(archivo, linea);        // Usuario
-        getline(archivo, linea);        // Contraseña
-        archivo.seekp(archivo.tellg()); // Posicionar al inicio del saldo
-        archivo << saldo;               // Sobrescribir el saldo
-        archivo.close();
-    }
-    else
-    {
-        cout << "Error al guardar el saldo.\n";
     }
 }
 
@@ -108,6 +44,7 @@ bool IniciarSesion(string &usuario)
         cout << "Usuario no encontrado.\n";
         return false;
     }
+
     getline(archivo, user);
     getline(archivo, contra);
     archivo.close();
@@ -160,8 +97,7 @@ float RetirarDinero(const string &usuario, float saldo, int montoRetiro)
     }
 
     float nuevoSaldo = saldo - montoRetiro;
-    RegistrarTransaccion(usuario, "Retiro", montoRetiro, nuevoSaldo);
-    GuardarSaldo(usuario, nuevoSaldo); // Guardar el saldo actualizado
+    RegistrarTransaccion(usuario, "Retiro", montoRetiro, nuevoSaldo); // Registrar el retiro
     return nuevoSaldo;
 }
 
@@ -175,8 +111,7 @@ float AgregarDinero(const string &usuario, float saldo, float montoDeposito)
     }
 
     float nuevoSaldo = saldo + montoDeposito;
-    RegistrarTransaccion(usuario, "Depósito", montoDeposito, nuevoSaldo);
-    GuardarSaldo(usuario, nuevoSaldo); // Guardar el saldo actualizado
+    RegistrarTransaccion(usuario, "Depósito", montoDeposito, nuevoSaldo); // Registrar el depósito
     return nuevoSaldo;
 }
 
@@ -184,7 +119,7 @@ float AgregarDinero(const string &usuario, float saldo, float montoDeposito)
 void MostrarMenu()
 {
     int opcion, opcion1;
-    float saldo, monto;
+    float saldo = 1000.75, monto;
     string usuario;
 
     do
@@ -203,14 +138,13 @@ void MostrarMenu()
             RegistrarUsuario();
             break;
         case 2:
-            if (IniciarSesion(usuario))
+            if (IniciarSesion(usuario)) // Pide usuario y contraseña una vez
             {
-                saldo = CargarSaldo(usuario); // Cargar saldo persistente
                 do
                 {
                     cout << "\nMenu de usuario\n";
                     cout << "1. Retiro\n";
-                    cout << "2. Dep\xA2sito\n";
+                    cout << "2. Depósito\n";
                     cout << "3. Salir\n";
                     cout << "Opción: ";
                     cin >> opcion1;
@@ -222,7 +156,7 @@ void MostrarMenu()
                         cout << "Ingresa el monto a retirar: $";
                         cin >> monto;
 
-                        saldo = RetirarDinero(usuario, saldo, monto);
+                        saldo = RetirarDinero(usuario, saldo, monto); // Actualiza el saldo después del retiro
                         cout << "Saldo restante: $" << saldo << endl;
                         break;
 
@@ -231,7 +165,7 @@ void MostrarMenu()
                         cout << "Ingresa el monto a depositar: $";
                         cin >> monto;
 
-                        saldo = AgregarDinero(usuario, saldo, monto);
+                        saldo = AgregarDinero(usuario, saldo, monto); // Actualiza el saldo después del depósito
                         cout << "Nuevo saldo: $" << saldo << endl;
                         break;
 
@@ -261,3 +195,4 @@ int main()
     MostrarMenu();
     return 0;
 }
+
