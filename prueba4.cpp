@@ -5,7 +5,7 @@ using namespace std;
 
 // Función para registrar movimientos en un archivo de texto
 // Tipo puede ser "Depósito", "Retiro", etc.
-// Usuario identifica quién realiza el movimiento
+// La Función identifica cual usuario realiza el movimiento
 // Monto es opcional (se registra solo si es mayor a 0)
 void RegistrarMovimiento(const string &tipo, const string &usuario, float monto = 0)
 {
@@ -39,7 +39,7 @@ void GuardarSaldo(const string &usuario, float saldo)
     }
     else
     {
-        cout << "Error al guardar el saldo del usuario.\n"; // Mensaje de error si no se pudo abrir el archivo
+        cout << "Error al guardar el saldo del usuario.\n"; // Mensaje de error si no se pudo abrir el archivo y leer el dato para almacenar
     }
 }
 
@@ -66,10 +66,11 @@ float CargarSaldo(const string &usuario)
 void RegistrarUsuario()
 {
     string usuario, contrasena;
+    int n=164, exclam=173, e=130;
 
     cout << "Ingrese usuario: ";
     cin >> usuario;
-    cout << "Ingrese contraseña: ";
+    cout << "Ingrese contrase" <<char(n); cout<<"a: ";//ASCII ñ se lee "ingres contraseña"
     cin >> contrasena;
 
     ofstream archivo(usuario + ".txt"); // Crea un archivo para el usuario con sus credenciales
@@ -82,8 +83,8 @@ void RegistrarUsuario()
         // Guarda un saldo inicial en un archivo separado
         GuardarSaldo(usuario, 1000.75);
 
-        cout << "¡Usuario registrado con éxito!\n";
-        RegistrarMovimiento("Registro de usuario", usuario); // Registra el movimiento en el log general
+        cout<<char(exclam); cout << "Usuario registrado con ";cout <<char(e)<<"xito!\n"; //ASCII tilde e
+        RegistrarMovimiento("Registro de usuario", usuario); // Registra el movimiento en el log general, este caso usuario
     }
     else
     {
@@ -96,32 +97,35 @@ void RegistrarUsuario()
 bool IniciarSesion(string &usuario)
 {
     string contrasena, user, contra;
+    int n=164,o=162, exclam=173;//ASCII para letra o tilde
 
     cout << "Ingrese su usuario: ";
     cin >> usuario;
-    cout << "Ingrese su contraseña: ";
+    cout << "Ingrese su contrase"<<char(n); cout<<"a: ";//ASCII ñ se lee "ingrese su contraseña"
     cin >> contrasena;
 
-    ifstream archivo(usuario + ".txt"); // Intenta abrir el archivo del usuario
+    ifstream archivo(usuario + ".txt"); // Intenta abrir y leer el archivo del usuario
     if (!archivo.is_open())             // Si no existe el archivo, muestra un mensaje y retorna false
     {
         cout << "Usuario no encontrado.\n";
+        cout << "Porfavor Registrarse\n";
         return false;
     }
 
-    // Lee el usuario y la contraseña almacenados en el archivo
+    // Lee el usuario y la contraseña almacenados en el archivo existente
     getline(archivo, user);
     getline(archivo, contra);
     archivo.close();
 
     if (user == usuario && contra == contrasena) // Verifica que las credenciales coincidan
     {
-        cout << "¡Inicio de sesión exitoso! Bienvenido, " << usuario << "!\n";
+         cout<<char(exclam);cout <<"Inicio de sesi"<<char(o); cout<<"n exitoso!"; 
+         cout<<char(exclam); cout<<"Bienvenido, "; cout<< usuario << "!\n";//ASCII inicio para signo de exclamacion entrada y 'o' tildada
         return true;
     }
     else
     {
-        cout << "Usuario o contraseña incorrectos.\n";
+        cout << "Usuario o contrase"<<char(n);cout<<"incorrectos.\n";//ASCII ñ
         return false;
     }
 }
@@ -130,19 +134,20 @@ bool IniciarSesion(string &usuario)
 // Verifica condiciones como que el monto no exceda el saldo y que sea múltiplo de 5
 float RetirarDinero(const string &usuario, float saldo, int montoRetiro)
 {
+    int a=160;//ASCII a tildada
     if (montoRetiro > saldo)
     {
-        cout << "No tienes suficiente saldo para este retiro." << endl;
+        cout << "No se posee suficiente saldo para este retiro." << endl;
         return saldo; // Retorna el saldo sin cambios
     }
     if (montoRetiro % 5 != 0)
     {
-        cout << "Solo puedes retirar montos que terminen en 5 o 0." << endl;
+        cout << "Solo es posible retirar montos que terminen en 5 o 0." << endl;
         return saldo; // Retorna el saldo sin cambios
     }
     if (montoRetiro > 500)
     {
-        cout << "Para cantidades mayores a $500, por favor acerquese a sucursal más cercana." << endl;
+        cout << "Para cantidades mayores a $500, por favor acerquese a sucursal m"<<char(a);cout<< "s cercana." << endl;
         return saldo; // Retorna el saldo sin cambios
     }
 
@@ -196,11 +201,12 @@ void Administrador()
 // Usuario y contraseña están predefinidos como "admin"
 bool ValidarAdministrador()
 {
+    int n=164;//ASCII n
     string usuario, contrasena;
 
     cout << "Ingrese usuario administrador: ";
     cin >> usuario;
-    cout << "Ingrese contraseña: ";
+    cout << "Ingrese contrase"<<char(n); cout<<"a: ";//ASCII ñ se lee "ingrese su contraseña"
     cin >> contrasena;
 
     if (usuario == "admin" && contrasena == "admin") // Verifica credenciales
@@ -220,17 +226,20 @@ void MostrarMenu()
     int opcion, opcion1, montoretiro;
     float montoDeposito;
     string usuario;
+    //caracteres especiales
+    int o=162, n=164,a=160;//ASCII a tildada;
 
     do
     {
         // Menú principal
         cout << "\nMenu\n";
-        cout << "---------------\n";
+        cout << "----------------------\n";
         cout << "1. Registrarse\n";
-        cout << "2. Iniciar Sesión\n";
+        cout << "2. Iniciar Sesi"<<char(o); cout<<"n\n"; //ASCII para imprimir ó
         cout << "3. Modo Administrador\n";
         cout << "4. Salir\n";
-        cout << "Opción: ";
+        cout << "----------------------\n";
+        cout << "Su opci"<<char(o); cout<<"n: ";//ASCII tilde o
         cin >> opcion;
 
         switch (opcion)
@@ -246,10 +255,14 @@ void MostrarMenu()
                 {
                     // Menú de usuario
                     cout << "\nMenu de usuario\n";
+                    cout << "----------------------\n";
+                    cout << "\n"; cout<<"Su saldo es:" <<saldo <<"$" "\n"; //mostrar saldo a usuario
+                    cout << "----------------------\n";
                     cout << "1. Retiro\n";
-                    cout << "2. Depósito\n";
+                    cout << "2. Dep"<<char(o); cout<<"sito\n";
                     cout << "3. Salir\n";
-                    cout << "Opción: ";
+                    cout << "----------------------\n";
+                    cout << "Su opci"<<char(o); cout<<"n: ";
                     cin >> opcion1;
 
                     switch (opcion1)
@@ -275,7 +288,7 @@ void MostrarMenu()
                         break;
 
                     default:
-                        cout << "Opción no válida.\n";
+                        cout << "Opci"<<char(o); cout<< "no v"<<char(a); cout<<"lida.\n";//DetalleASCII
                         break;
                     }
                 } while (opcion1 != 3); // Repite hasta que el usuario elija salir
