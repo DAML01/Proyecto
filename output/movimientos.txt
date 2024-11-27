@@ -3,3 +3,5 @@ Tipo: Retiro, Usuario: a, Monto: $400
 Tipo: Depósito, Usuario: a, Monto: $100
 Tipo: Retiro, Usuario: a, Monto: $100
 Tipo: Depósito, Usuario: a, Monto: $45
+Tipo: Retiro, Usuario: a, Monto: $45
+Tipo: Retiro, Usuario: a, Monto: $200
